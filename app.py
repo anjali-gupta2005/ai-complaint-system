@@ -601,6 +601,7 @@ def dashboard_data():
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+train_model()
+
 if __name__ == '__main__':
-    train_model()
     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
