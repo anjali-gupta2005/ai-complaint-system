@@ -1,0 +1,130 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="page-header">
+    <h1>Overview</h1>
+    <p>Live complaint intelligence</p>
+</div>
+
+<div class="stats-grid">
+    <div class="card stat-card">
+        <h4>Total Complaints</h4>
+        <div class="value">{{ total }}</div>
+    </div>
+    <div class="card stat-card">
+        <h4>Pending</h4>
+        <div class="value accent">{{ pending }}</div>
+    </div>
+    <div class="card stat-card">
+        <h4>Resolved</h4>
+        <div class="value success">{{ resolved }}</div>
+    </div>
+    <div class="card stat-card">
+        <h4>In Progress</h4>
+        <div class="value warning">{{ in_progress }}</div>
+    </div>
+</div>
+
+<div class="charts-grid">
+    <div class="chart-card">
+        <div class="chart-title">COMPLAINTS BY CATEGORY</div>
+        <div class="chart-wrap">
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-card">
+        <div class="chart-title">PRIORITY DISTRIBUTION</div>
+        <div class="chart-wrap">
+            <canvas id="priorityChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script id="category-data" type="application/json">{{ category_rows|tojson }}</script>
+<script id="priority-data" type="application/json">{{ priority_rows|tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const categoryRows = JSON.parse(document.getElementById('category-data').textContent || '[]');
+const priorityRows = JSON.parse(document.getElementById('priority-data').textContent || '[]');
+
+const colors = {
+    primary: '#c95a2e',
+    orange: '#dca521',
+    green: '#2f8b57',
+    blue: '#3e74b6',
+    gray: '#6f6963'
+};
+
+new Chart(document.getElementById('categoryChart'), {
+    type: 'doughnut',
+    data: {
+        labels: categoryRows.map(r => r.category),
+        datasets: [{
+            data: categoryRows.map(r => r.total),
+            backgroundColor: [colors.primary, colors.blue, colors.orange, colors.green, colors.gray],
+            borderWidth: 2,
+            borderColor: '#1c1916'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '60%',
+        plugins: {
+            legend: {
+                position: 'right',
+                labels: {
+                    padding: 20,
+                    usePointStyle: true,
+                    color: '#b8aa96'
+                }
+            }
+        }
+    }
+});
+
+new Chart(document.getElementById('priorityChart'), {
+    type: 'bar',
+    data: {
+        labels: priorityRows.map(r => r.priority),
+        datasets: [{
+            data: priorityRows.map(r => r.total),
+            backgroundColor: [colors.primary, colors.orange, colors.green],
+            borderRadius: 8,
+            borderSkipped: false
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#8b7c69'
+                },
+                grid: {
+                    color: 'rgba(255,255,255,0.06)'
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                },
+                ticks: {
+                    color: '#b8aa96'
+                }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

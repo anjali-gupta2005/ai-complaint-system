@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block body %}
+<div class="auth-wrapper">
+    <div class="card auth-card success-card">
+        <h1>Complaint Submitted</h1>
+        <p>Your complaint has been analyzed successfully</p>
+
+        <div class="detail-list">
+            <div><span>Complaint ID</span><strong>{{ complaint_id }}</strong></div>
+            <div><span>Category</span><strong>{{ category }}</strong></div>
+            <div><span>Priority</span><strong>{{ priority }}</strong></div>
+            <div><span>Sentiment</span><strong>{{ sentiment }}</strong></div>
+            <div><span>Department</span><strong>{{ department }}</strong></div>
+        </div>
+
+        <div class="btn-row" style="margin-top:20px;">
+            <a href="{{ url_for('submit_complaint') }}" class="btn btn-primary">Submit Another</a>
+            <a href="{{ url_for('admin_login') }}" class="btn btn-secondary">Admin Login</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

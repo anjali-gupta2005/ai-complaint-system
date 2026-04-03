@@ -1,0 +1,22 @@
+
+{% extends 'base.html' %}
+{% block body %}
+<div class="app-shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <h2>ComplaintIQ</h2>
+            <p>AI-Powered System</p>
+        </div>
+
+        <nav class="nav">
+            <a href="{{ url_for('admin_dashboard') }}" class="{% if active_page == 'dashboard' %}active{% endif %}">Dashboard</a>
+            <a href="{{ url_for('manage_complaints') }}" class="{% if active_page == 'manage' %}active{% endif %}">Manage</a>
+            <a href="{{ url_for('admin_logout') }}">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+</div>
+{% endblock %}

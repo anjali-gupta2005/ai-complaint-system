@@ -1,0 +1,69 @@
+{% extends 'admin_base.html' %}
+{% block content %}
+<div class="page-header">
+    <h1>Complaint Detail</h1>
+    <p>Review AI analysis and respond to the customer</p>
+</div>
+
+<div class="three-col detail-layout">
+    <div class="card panel detail-summary">
+        <div class="section-title">Complaint Summary</div>
+
+        <div class="detail-list compact">
+            <div><span>Complaint ID</span><strong>{{ complaint.complaint_id }}</strong></div>
+            <div><span>Name</span><strong>{{ complaint.name }}</strong></div>
+            <div><span>Email</span><strong>{{ complaint.email }}</strong></div>
+            <div><span>Category</span><strong>{{ complaint.category }}</strong></div>
+            <div><span>Priority</span><strong>{{ complaint.priority }}</strong></div>
+            <div><span>Sentiment</span><strong>{{ complaint.sentiment }}</strong></div>
+            <div><span>Department</span><strong>{{ complaint.department }}</strong></div>
+            <div><span>Status</span><strong>{{ complaint.status }}</strong></div>
+        </div>
+    </div>
+
+    <div class="card panel">
+        <div class="section-title">Complaint Text</div>
+        <p class="complaint-text-box">{{ complaint.complaint_text }}</p>
+
+        <div class="attachment-section">
+            <div class="section-title">Attachment</div>
+
+            {% if complaint.attachment %}
+                <div class="attachment-box">
+                    <div class="attachment-meta">
+                        <span class="attachment-label">Uploaded File</span>
+                        <p class="attachment-name">{{ complaint.attachment }}</p>
+                    </div>
+
+                    <a href="{{ url_for('uploaded_file', filename=complaint.attachment) }}"
+                       target="_blank"
+                       class="attachment-btn">
+                        Open File
+                    </a>
+                </div>
+            {% else %}
+                <p class="no-attachment">No attachment uploaded</p>
+            {% endif %}
+        </div>
+
+        <form method="POST" class="update-form">
+            <div class="form-group">
+                <label>Update Status</label>
+                <select name="status" class="select" required>
+                    <option {% if complaint.status == 'Pending' %}selected{% endif %}>Pending</option>
+                    <option {% if complaint.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                    <option {% if complaint.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                    <option {% if complaint.status == 'Closed' %}selected{% endif %}>Closed</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Admin Response</label>
+                <textarea name="admin_response" class="textarea" placeholder="Write your response to customer...">{{ complaint.admin_response or '' }}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Update</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
