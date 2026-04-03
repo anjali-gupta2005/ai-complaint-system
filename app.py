@@ -32,6 +32,8 @@ app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL', 'False').lower() == 
 app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', os.environ.get('MAIL_USERNAME'))
+app.config['MAIL_DEBUG'] = True
+app.config['MAIL_SUPPRESS_SEND'] = False
 
 mail = Mail(app)
 
@@ -284,11 +286,16 @@ def generate_complaint_id():
 
 def send_email_safe(subject, recipients, body):
     try:
-        msg = Message(subject=subject, recipients=recipients)
+        msg = Message(
+            subject=subject,
+            recipients=recipients,
+            sender=app.config.get('MAIL_DEFAULT_SENDER')
+        )
         msg.body = body
         mail.send(msg)
         return True
-    except Exception:
+    except Exception as e:
+        print("EMAIL ERROR:", e)
         return False
 
 def login_required(f):
