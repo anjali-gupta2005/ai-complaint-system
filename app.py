@@ -15,6 +15,8 @@ from nltk.tokenize import word_tokenize
 from textblob import TextBlob
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
+from urllib.parse import urlparse
+
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'change-this-secret-key-for-local-dev-only')
@@ -34,13 +36,31 @@ app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', os.env
 mail = Mail(app)
 
 # Database config from environment variables
-DB_CONFIG = {
-    'host': os.getenv('DB_HOST'),     
-    'port': int(os.getenv('DB_PORT', 3306)),
-    'user': os.getenv('DB_USER'),
-    'password': os.getenv('DB_PASSWORD'),
-    'database': os.getenv('DB_NAME')
-}
+db_url = os.environ.get("DATABASE_URL")
+
+if db_url:
+    url = urlparse(db_url)
+
+    DB_CONFIG = {
+        "host": url.hostname,
+        "port": url.port,
+        "user": url.username,
+        "password": url.password,
+        "database": url.path[1:]
+    }
+
+else:
+    # Local fallback (XAMPP)
+    DB_CONFIG = {
+        "host": "localhost",
+        "port": 3306,
+        "user": "root",
+        "password": "",
+        "database": "complaint_ai"
+    }
+
+conn = mysql.connector.connect(**DB_CONFIG)
+cursor = conn.cursor()
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf', 'doc', 'docx', 'txt'}
 
