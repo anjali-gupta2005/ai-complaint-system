@@ -215,7 +215,7 @@ TRAINING_DATA = [
 ]
 
 # Admin credentials from environment variables
-ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'admin@complaintiq.com')
+ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL', 'anjali@complaint.com')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
 
 nltk.download('stopwords', quiet=True)
